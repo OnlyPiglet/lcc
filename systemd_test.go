@@ -52,7 +52,7 @@ func TestSystemdTestTimerSetsTightAccuracy(t *testing.T) {
 	}
 }
 func TestSystemdTestServiceAlwaysPinsDataDir(t *testing.T) {
-	if !strings.Contains(SystemdServiceUnit("demo"), "Environment=EVERY_HOME="+DataDir()) {
+	if !strings.Contains(SystemdServiceUnit("demo"), systemdEnvironment(DataDir())) {
 		t.Fatal("data dir")
 	}
 }

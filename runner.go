@@ -336,7 +336,6 @@ func trimRuns(path string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 	sc := bufio.NewScanner(f)
 	sc.Buffer(make([]byte, 4096), 2*1024*1024)
 	lines := []string{}
@@ -346,8 +345,13 @@ func trimRuns(path string) error {
 			lines = lines[1:]
 		}
 	}
-	if err := sc.Err(); err != nil {
-		return err
+	scanErr := sc.Err()
+	closeErr := f.Close()
+	if scanErr != nil {
+		return scanErr
+	}
+	if closeErr != nil {
+		return closeErr
 	}
 	tmp, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".tmp.*")
 	if err != nil {
